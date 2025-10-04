@@ -2,8 +2,20 @@
   "navigationFallback": {
     "rewrite": "/index.html"
   },
+  "routes": [
+    {
+      "route": "/api/*",
+      "allowedRoles": ["anonymous"]
+    }
+  ],
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/index.html"
+    }
+  },
   "mimeTypes": {
     ".json": "application/json",
-    ".html": "text/html"
+    ".html": "text/html",
+    ".js": "text/javascript"
   }
 }

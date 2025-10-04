@@ -71,25 +71,14 @@
                 this.updateUI();
 
                 try {
-                    const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    // Call your Azure Function API
+                    const response = await fetch('/api/analyze', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            model: 'claude-sonnet-4-20250514',
-                            max_tokens: 500,
-                            messages: [{
-                                role: 'user',
-                                content: `Analyze the following text and provide: 
-1. Sentiment (positive/negative/neutral)
-2. Key topics
-3. Brief summary
-
-Text: "${this.text}"
-
-Respond in a clear, structured format.`
-                            }]
+                            text: this.text
                         })
                     });
 
@@ -98,7 +87,12 @@ Respond in a clear, structured format.`
                     }
 
                     const data = await response.json();
-                    this.result = data.content[0].text;
+                    
+                    if (!data.success) {
+                        throw new Error(data.error || 'Analysis failed');
+                    }
+                    
+                    this.result = data.analysis;
                     this.showResult();
                 } catch (err) {
                     this.showError('Failed to analyze text. Please try again.');
